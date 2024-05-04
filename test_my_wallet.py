@@ -1,4 +1,5 @@
 import unittest
+
 from main import FinanceManager, Record
 
 
