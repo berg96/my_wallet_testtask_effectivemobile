@@ -4,6 +4,7 @@ from typing import Optional
 
 
 class Record:
+    """Финансовая запись с датой, категорией, суммой и описанием"""
     def __init__(
             self, date: str, category: str, amount: int, description: str
     ):
@@ -14,16 +15,21 @@ class Record:
 
 
 class FinanceManager:
+    """Финансовый менеджер с основными функциями приложения"""
     def __init__(self):
         self.records: list[Record] = []
 
     def add_record(self, record: Record) -> None:
+        """Добавляет запись в список всех записей"""
         self.records.append(record)
 
     def edit_record(self, index: int, record: Record) -> None:
+        """Изменяет запись по индексу в списке записей"""
         self.records[index] = record
 
     def get_balance(self) -> tuple[int, int, int]:
+        """Вывод баланса.
+        Отдаёт кортеж с суммой доходов, суммой расходов и балансом"""
         total_income: int = sum(
             record.amount for record in self.records
             if record.category == 'Доход'
@@ -39,6 +45,7 @@ class FinanceManager:
             self, date: Optional[str] = '', category: Optional[str] = '',
             amount: Optional[str] = ''
     ) -> Optional[list[Record]]:
+        """Поиск записей по дате, категории и сумме (опционально)"""
         result: list[Record] = []
         for record in self.records:
             if (
@@ -51,10 +58,13 @@ class FinanceManager:
 
 
 class FileHandler:
+    """Класс, работающий с файлом на чтение,
+    перезапись, добавление и изменение"""
     def __init__(self, filename: str):
         self.filename = filename
 
     def save(self, records: list[Record]) -> None:
+        """Перезапись файла всех данных"""
         with open(self.filename, 'w', encoding='utf-8') as file:
             data: str = '\n'.join(
                 [
@@ -70,12 +80,14 @@ class FileHandler:
             file.write(data)
 
     def load(self) -> Optional[list[str]]:
+        """Чтение данных из файла"""
         if os.path.exists(self.filename):
             with open(self.filename, 'r', encoding='utf-8') as file:
                 data: list[str] = file.readlines()
             return data
 
     def add(self, record: Record) -> None:
+        """Добавление записи в конец файла"""
         with open(self.filename, 'a', encoding='utf-8') as file:
             data: str = '\n'.join(
                 (
@@ -90,6 +102,7 @@ class FileHandler:
             file.write(data)
 
     def edit(self, index: int, record: Record) -> None:
+        """Изменение файла по индексу записи"""
         with open(self.filename, 'r', encoding='utf-8') as file:
             lines: list[str] = file.readlines()
         with open(self.filename, 'w', encoding='utf-8') as file:
@@ -113,6 +126,7 @@ class FileHandler:
 
 
 class ConsoleUI:
+    """Консольный пользовательский интерфейс"""
     def __init__(
             self, finance_manager: FinanceManager, file_handler: FileHandler
     ):
@@ -121,6 +135,7 @@ class ConsoleUI:
 
     @staticmethod
     def clear_screen() -> None:
+        """Очистка консоли"""
         if os.name == 'nt':
             os.system('cls')
         else:
@@ -128,6 +143,7 @@ class ConsoleUI:
 
     @staticmethod
     def show_menu() -> None:
+        """Вывод в консоль меню приложения"""
         print('--- Учет личных доходов и расходов ---')
         print('1. Вывести баланс')
         print('2. Добавить запись')
@@ -136,6 +152,7 @@ class ConsoleUI:
         print('5. Выход')
 
     def load_data(self) -> None:
+        """Загрузка данных из файла в Финансовый менеджер"""
         data: Optional[list[str]] = self.file_handler.load()
         if data:
             for row in data:
@@ -156,6 +173,7 @@ class ConsoleUI:
             )
 
     def handle_input(self) -> None:
+        """Принимает и обрабатывает ввод пользователя"""
         choice: str = input('> ')
         if choice == '1':
             self.clear_screen()
@@ -242,6 +260,8 @@ class ConsoleUI:
 
 
 def my_wallet() -> None:
+    """Создает экземпляры классов FileHandler, FinanceManager и ConsoleUI,
+    загружает данные, отображает меню и обрабатывает ввод пользователя"""
     file_handler: FileHandler = FileHandler('data.txt')
     finance_manager: FinanceManager = FinanceManager()
     ui: ConsoleUI = ConsoleUI(finance_manager, file_handler)
