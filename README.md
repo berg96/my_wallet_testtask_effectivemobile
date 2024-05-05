@@ -20,7 +20,7 @@ tg: [@Berg1005](https://t.me/berg1005)
 
 Клонировать репозиторий:
 ```
-git clone git@github.com:berg96/tasks_bot_testtask_anverali.git
+git clone git@github.com:berg96/my_wallet_testtask_effectivemobile.git
 ```
 Запустить файл main.py через консоль:
 ```
